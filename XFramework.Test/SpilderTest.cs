@@ -15,12 +15,10 @@ namespace XFramework.Test
         public void Test()
         {
             var m_spider = new Spider();
-            m_spider.OutputPath = @"D:\temp\";
-            var targetUrl = "http://www.wj1973.com/";
-            int threads = 20;
+            m_spider.SpiderControl = new SpiderControl1();
             try
             {
-                m_spider.Start(new Uri(targetUrl), threads);
+                m_spider.Start();
             }
             catch (UriFormatException ex)
             {
@@ -36,23 +34,33 @@ namespace XFramework.Test
         {
             OutputPath = @"D:\temp\";
             TargetUrl = "http://www.wj1973.com/";
+            ThreadsCount = 20;
         }
 
         public string OutputPath { get; set; }
 
         public string TargetUrl { get; set; }
 
+        public int ThreadsCount { get; set; }
+
         public bool Filter(Uri uri)
         {
-            return true;
+            return uri.AbsolutePath.ToLower().Contains("product/");
         }
 
         public void Save(Uri uri, string buffer)
         {
-            if (OutputPath == null)
+            if (!Filter(uri))
+            {
                 return;
-
-            string filename = convertFilename(m_uri);
+            }
+            if (OutputPath == null)
+            { return; }
+            if (!Directory.Exists(OutputPath))
+            {
+                Directory.CreateDirectory(OutputPath);
+            }
+            string filename = Utility.ConvertFilename(uri, OutputPath);
             StreamWriter outStream = new StreamWriter(filename);
             outStream.Write(buffer);
             outStream.Close();

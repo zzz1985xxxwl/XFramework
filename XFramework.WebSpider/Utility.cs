@@ -15,8 +15,9 @@ namespace XFramework.WebSpider
         ///   will be created by this method.
         /// </summary>
         /// <param name = "uri">The URI of the file about to be stored</param>
+        /// <param name="outputPath"></param>
         /// <returns></returns>
-        public static string convertFilename(Uri uri, string outputPath)
+        public static string ConvertFilename(Uri uri, string outputPath)
         {
             int index1;
             int index2;

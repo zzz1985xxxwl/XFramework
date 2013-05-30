@@ -6,6 +6,7 @@ namespace XFramework.WebSpider
     {
         string OutputPath { get; set; }
         string TargetUrl { get; set; }
+        int ThreadsCount { get; set; }
 
         bool Filter(Uri uri);
         void Save(Uri uri, string buffer);

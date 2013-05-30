@@ -117,26 +117,6 @@ namespace XFramework.WebSpider
             Monitor.Exit(this);
         }
 
-        /// <summary>
-        ///   The URI that is to be spidered
-        /// </summary>
-        public Uri BaseURI
-        {
-            get { return m_base; }
-
-            set { m_base = value; }
-        }
-
-        /// <summary>
-        ///   The local directory to save the spidered files to
-        /// </summary>
-        public string OutputPath
-        {
-            get { return m_outputPath; }
-
-            set { m_outputPath = value; }
-        }
-
         public ISpiderControl SpiderControl { get; set; }
 
         /// <summary>
@@ -191,19 +171,19 @@ namespace XFramework.WebSpider
         /// </summary>
         /// <param name = "baseURI">The base URI to spider</param>
         /// <param name = "threads">The number of threads to use</param>
-        public void Start(Uri baseURI, int threads)
+        public void Start()
         {
             // init the spider
             m_quit = false;
 
-            m_base = baseURI;
+            m_base = new Uri(SpiderControl.TargetUrl);
             addURI(m_base);
             m_startTime = DateTime.Now.Ticks;
             m_done.Reset();
 
             // startup the threads
 
-            for (int i = 1; i <= threads; i++)
+            for (int i = 1; i <= SpiderControl.ThreadsCount; i++)
             {
                 DocumentWorker worker = new DocumentWorker(this);
                 worker.Number = i;

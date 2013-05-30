@@ -62,7 +62,7 @@ namespace XFramework.WebSpider
         /// <returns></returns>
         private string convertFilename(Uri uri)
         {
-            string result = m_spider.OutputPath;
+            string result = m_spider.SpiderControl.OutputPath;
             int index1;
             int index2;
 
@@ -134,7 +134,7 @@ namespace XFramework.WebSpider
         {
             byte[] buffer = new byte[1024];
 
-            if (m_spider.OutputPath == null)
+            if (m_spider.SpiderControl.OutputPath == null)
                 return;
 
             string filename = convertFilename(response.ResponseUri);
@@ -159,7 +159,7 @@ namespace XFramework.WebSpider
         /// <param name = "buffer">The text to save</param>
         private void SaveTextFile(string buffer)
         {
-            if (m_spider.OutputPath == null)
+            if (m_spider.SpiderControl.OutputPath == null)
                 return;
 
             string filename = convertFilename(m_uri);
@@ -200,8 +200,7 @@ namespace XFramework.WebSpider
                 {
                     buffer += line + "\r\n";
                 }
-
-                SaveTextFile(buffer);
+                m_spider.SpiderControl.Save(m_uri, buffer);
                 return buffer;
             }
             catch (WebException e)
