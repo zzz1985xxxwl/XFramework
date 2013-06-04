@@ -52,121 +52,107 @@ namespace XFramework.WebSpider
             m_spider = spider;
         }
 
-        /// <summary>
-        ///   This method will take a URI name, such ash /images/blank.gif
-        ///   and convert it into the name of a file for local storage.
-        ///   If the directory structure to hold this file does not exist, it
-        ///   will be created by this method.
-        /// </summary>
-        /// <param name = "uri">The URI of the file about to be stored</param>
-        /// <returns></returns>
-        private string convertFilename(Uri uri)
-        {
-            string result = m_spider.SpiderControl.OutputPath;
-            int index1;
-            int index2;
+        ///// <summary>
+        /////   This method will take a URI name, such ash /images/blank.gif
+        /////   and convert it into the name of a file for local storage.
+        /////   If the directory structure to hold this file does not exist, it
+        /////   will be created by this method.
+        ///// </summary>
+        ///// <param name = "uri">The URI of the file about to be stored</param>
+        ///// <returns></returns>
+        //private string convertFilename(Uri uri)
+        //{
+        //    string result = m_spider.SpiderControl.OutputPath;
+        //    int index1;
+        //    int index2;
 
-            // add ending slash if needed
-            if (result[result.Length - 1] != '\\')
-                result = result + "\\";
+        //    // add ending slash if needed
+        //    if (result[result.Length - 1] != '\\')
+        //        result = result + "\\";
 
-            // strip the query if needed
+        //    // strip the query if needed
 
-            String path = uri.PathAndQuery;
-            int queryIndex = path.IndexOf("?");
-            if (queryIndex != -1)
-                path = path.Substring(0, queryIndex);
+        //    String path = uri.PathAndQuery;
+        //    int queryIndex = path.IndexOf("?");
+        //    if (queryIndex != -1)
+        //        path = path.Substring(0, queryIndex);
 
-            // see if an ending / is missing from a directory only
+        //    // see if an ending / is missing from a directory only
 
-            int lastSlash = path.LastIndexOf('/');
-            int lastDot = path.LastIndexOf('.');
+        //    int lastSlash = path.LastIndexOf('/');
+        //    int lastDot = path.LastIndexOf('.');
 
-            if (path[path.Length - 1] != '/')
-            {
-                if (lastSlash > lastDot)
-                    path += "/" + IndexFile;
-            }
+        //    if (path[path.Length - 1] != '/')
+        //    {
+        //        if (lastSlash > lastDot)
+        //            path += "/" + IndexFile;
+        //    }
 
-            // determine actual filename		
-            lastSlash = path.LastIndexOf('/');
+        //    // determine actual filename		
+        //    lastSlash = path.LastIndexOf('/');
 
-            string filename = "";
-            if (lastSlash != -1)
-            {
-                filename = path.Substring(1 + lastSlash);
-                path = path.Substring(0, 1 + lastSlash);
-                if (filename.Equals(""))
-                    filename = IndexFile;
-            }
-
-
-            // create the directory structure, if needed
-
-            index1 = 1;
-            do
-            {
-                index2 = path.IndexOf('/', index1);
-                if (index2 != -1)
-                {
-                    String dirpart = path.Substring(index1, index2 - index1);
-                    result += dirpart;
-                    result += "\\";
+        //    string filename = "";
+        //    if (lastSlash != -1)
+        //    {
+        //        filename = path.Substring(1 + lastSlash);
+        //        path = path.Substring(0, 1 + lastSlash);
+        //        if (filename.Equals(""))
+        //            filename = IndexFile;
+        //    }
 
 
-                    Directory.CreateDirectory(result);
+        //    // create the directory structure, if needed
 
-                    index1 = index2 + 1;
-                }
-            } while (index2 != -1);
+        //    index1 = 1;
+        //    do
+        //    {
+        //        index2 = path.IndexOf('/', index1);
+        //        if (index2 != -1)
+        //        {
+        //            String dirpart = path.Substring(index1, index2 - index1);
+        //            result += dirpart;
+        //            result += "\\";
 
-            // attach name			
-            result += filename;
 
-            return result;
-        }
+        //            Directory.CreateDirectory(result);
 
-        /// <summary>
-        ///   Save a binary file to disk.
-        /// </summary>
-        /// <param name = "response">The response used to save the file</param>
-        private void SaveBinaryFile(WebResponse response)
-        {
-            byte[] buffer = new byte[1024];
+        //            index1 = index2 + 1;
+        //        }
+        //    } while (index2 != -1);
 
-            if (m_spider.SpiderControl.OutputPath == null)
-                return;
+        //    // attach name			
+        //    result += filename;
 
-            string filename = convertFilename(response.ResponseUri);
-            Stream outStream = File.Create(filename);
-            Stream inStream = response.GetResponseStream();
+        //    return result;
+        //}
 
-            int l;
-            do
-            {
-                l = inStream.Read(buffer, 0, buffer.Length);
-                if (l > 0)
-                    outStream.Write(buffer, 0, l);
-            } while (l > 0);
+        ///// <summary>
+        /////   Save a binary file to disk.
+        ///// </summary>
+        ///// <param name = "response">The response used to save the file</param>
+        //private void SaveBinaryFile(WebResponse response)
+        //{
+        //    byte[] buffer = new byte[1024];
 
-            outStream.Close();
-            inStream.Close();
-        }
+        //    if (m_spider.SpiderControl.OutputPath == null)
+        //        return;
 
-        /// <summary>
-        ///   Save a text file.
-        /// </summary>
-        /// <param name = "buffer">The text to save</param>
-        private void SaveTextFile(string buffer)
-        {
-            if (m_spider.SpiderControl.OutputPath == null)
-                return;
+        //    string filename = convertFilename(response.ResponseUri);
+        //    Stream outStream = File.Create(filename);
+        //    Stream inStream = response.GetResponseStream();
 
-            string filename = convertFilename(m_uri);
-            StreamWriter outStream = new StreamWriter(filename);
-            outStream.Write(buffer);
-            outStream.Close();
-        }
+        //    int l;
+        //    do
+        //    {
+        //        l = inStream.Read(buffer, 0, buffer.Length);
+        //        if (l > 0)
+        //            outStream.Write(buffer, 0, l);
+        //    } while (l > 0);
+
+        //    outStream.Close();
+        //    inStream.Close();
+        //}
+
 
         /// <summary>
         ///   Download a page
@@ -188,7 +174,8 @@ namespace XFramework.WebSpider
 
                 if (!response.ContentType.ToLower().StartsWith("text/"))
                 {
-                    SaveBinaryFile(response);
+                    m_spider.SpiderControl.Save(m_uri, response.ToString());
+                    //SaveBinaryFile(response);
                     return null;
                 }
 

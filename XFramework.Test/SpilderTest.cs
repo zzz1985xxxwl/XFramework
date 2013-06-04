@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+using MongoDB.Driver;
 using NUnit.Framework;
 using XFramework.WebSpider;
 
@@ -32,12 +29,9 @@ namespace XFramework.Test
     {
         public SpiderControl1()
         {
-            OutputPath = @"D:\temp\";
             TargetUrl = "http://www.wj1973.com/";
             ThreadsCount = 20;
         }
-
-        public string OutputPath { get; set; }
 
         public string TargetUrl { get; set; }
 
@@ -50,25 +44,36 @@ namespace XFramework.Test
 
         public void Save(Uri uri, string buffer)
         {
-            if (!Filter(uri))
+            if (!Filter(uri)||string.IsNullOrEmpty(buffer))
             {
                 return;
             }
-            if (OutputPath == null)
-            { return; }
-            if (!Directory.Exists(OutputPath))
-            {
-                Directory.CreateDirectory(OutputPath);
-            }
-            string filename = Utility.ConvertFilename(uri, OutputPath);
-            StreamWriter outStream = new StreamWriter(filename);
-            outStream.Write(buffer);
-            outStream.Close();
+            const string connectionString = "mongodb://localhost";
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase("test");
+            var collection = database.GetCollection<ProductEntity>("Product");
+
+            var entity = new ProductEntity {Url = uri.ToString(), Detail = buffer};
+            collection.Insert(entity);
+            //const string outputPath = @"D:\temp\";
+            //if (!Filter(uri))
+            //{
+            //    return;
+            //}
+            //if (!Directory.Exists(outputPath))
+            //{
+            //    Directory.CreateDirectory(outputPath);
+            //}
+            //string filename = Utility.ConvertFilename(uri, outputPath);
+            //StreamWriter outStream = new StreamWriter(filename);
+            //outStream.Write(buffer);
+            //outStream.Close();
         }
 
         public void Log(Uri uri, string info)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(info);
         }
     }
 }

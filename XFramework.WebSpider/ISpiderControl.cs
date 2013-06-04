@@ -4,7 +4,6 @@ namespace XFramework.WebSpider
 {
     public interface ISpiderControl
     {
-        string OutputPath { get; set; }
         string TargetUrl { get; set; }
         int ThreadsCount { get; set; }
 

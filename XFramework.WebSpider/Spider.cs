@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text;
 using System.Threading;
 
 namespace XFramework.WebSpider
@@ -158,10 +159,11 @@ namespace XFramework.WebSpider
 
             long etime = (DateTime.Now.Ticks - m_startTime) / 10000000L;
             long urls = (etime == 0) ? 0 : m_urlCount / etime;
-            Console.WriteLine("next:" + next);
-            Console.WriteLine("ProcessedCount:" + "" + (m_urlCount++));
-            Console.WriteLine("ElapsedTime:" + etime / 60 + " minutes (" + urls + " urls/sec)");
-
+            StringBuilder sb=new StringBuilder();
+            sb.AppendLine("next:" + next);
+            sb.AppendLine("ProcessedCount:" + "" + (m_urlCount++));
+            sb.AppendLine("ElapsedTime:" + etime / 60 + " minutes (" + urls + " urls/sec)");
+            SpiderControl.Log(next,sb.ToString());
             Monitor.Exit(this);
             return next;
         }
